@@ -29,18 +29,20 @@ export default function FormulaCard({
   };
 
   return (
-    <div className="flex-1 min-w-[200px] p-4 bg-gray-100 rounded-lg shadow-md text-center overflow-hidden">
-      <p className="text-lg font-semibold">{title}</p>
+    <div className="flex-1 min-w-[150px] p-3 sm:p-4 bg-gray-100 rounded-lg shadow-md text-center overflow-hidden">
+      <p className="text-base sm:text-lg font-semibold">{title}</p>
 
-      <p className="text-base break-words">{renderFormula(formula)}</p>
+      <p className="text-sm sm:text-base break-words overflow-x-auto">
+        {renderFormula(formula)}
+      </p>
       <button
-        className="mt-2 text-blue-500 hover:text-blue-700 text-sm"
+        className="mt-2 text-blue-500 hover:text-blue-700 text-xs sm:text-sm"
         onClick={toggleCode}
       >
         {isCodeVisible ? "Hide Code" : "Show Code"}
       </button>
       {isCodeVisible && (
-        <pre className="mt-2 text-sm text-gray-600 bg-gray-200 p-2 rounded-lg break-words overflow-auto max-h-48">
+        <pre className="mt-2 text-xs sm:text-sm text-gray-600 bg-gray-200 p-2 rounded-lg break-words overflow-auto max-h-32 sm:max-h-48">
           {code}
         </pre>
       )}
