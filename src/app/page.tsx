@@ -528,7 +528,7 @@ export default function Home() {
       {/* Main content area - compact layout to fit in viewport */}
       <div className="flex flex-row items-start justify-center gap-4 max-w-6xl mx-auto">
         {/* Left sidebar - Memories */}
-        <div className="flex flex-col w-[180px] h-[350px] border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <div className="flex flex-col w-[180px] h-[420px] border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <h2 className="text-sm font-medium text-center text-gray-700 py-2 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 flex items-center justify-center">
             <span className="mr-1">🗃️</span> memo{" "}
             {patterns.length > 0 ? `(${patterns.length})` : ""}
@@ -628,7 +628,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="relative w-[350px] h-[350px] flex items-center justify-center">
+              <div className="relative w-[350px] h-[420px] flex items-center justify-center">
                 <canvas
                   ref={canvasRef}
                   width={35 * cellLength}
@@ -641,7 +641,7 @@ export default function Home() {
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
                   className="border border-gray-300 rounded-lg shadow-sm max-w-full h-auto touch-manipulation"
-                  style={{ maxHeight: "350px", maxWidth: "350px" }}
+                  style={{ maxHeight: "420px", maxWidth: "350px" }}
                 />
                 {(isLoading || isMemorizing) && (
                   <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center pointer-events-none rounded-lg">
@@ -771,79 +771,103 @@ export default function Home() {
                 <h3 className="text-xs font-medium text-gray-700 mb-2 border-b pb-1">
                   Webcam Controls
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    className="btn btn-sm control-btn h-[36px] text-xs"
-                    onClick={startWebcam}
-                    disabled={isWebcamActive}
-                    title="Start webcam"
-                  >
-                    <span className="flex items-center justify-center">
-                      <span className="mr-1">📷</span> Webcam
-                    </span>
-                  </button>
-                  <button
-                    className="btn btn-sm control-btn h-[36px] text-xs"
-                    onClick={stopWebcam}
-                    disabled={!isWebcamActive}
-                    title="Stop webcam"
-                  >
-                    <span className="flex items-center justify-center">
-                      <span className="mr-1">⏹️</span> Stop
-                    </span>
-                  </button>
-                  <button
-                    className="btn btn-sm control-btn h-[36px] text-xs"
-                    onClick={startCapturing}
-                    disabled={!isWebcamActive}
-                    title="Start capturing frames"
-                  >
-                    <span className="flex items-center justify-center">
-                      <span className="mr-1">📸</span> Capture
-                    </span>
-                  </button>
+
+                {/* Webcam row */}
+                <div className="flex items-center mb-2 p-1 bg-gray-50 rounded-md">
+                  <div className="w-1/4 text-xs text-gray-500 font-medium pl-1">
+                    Webcam:
+                  </div>
+                  <div className="w-3/4 grid grid-cols-2 gap-1">
+                    <button
+                      className="btn btn-sm control-btn h-[32px] text-xs bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                      onClick={startWebcam}
+                      disabled={isWebcamActive}
+                      title="Start webcam"
+                    >
+                      <span className="flex items-center justify-center">
+                        <span className="mr-1">📷</span> Start
+                      </span>
+                    </button>
+                    <button
+                      className="btn btn-sm control-btn h-[32px] text-xs bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                      onClick={stopWebcam}
+                      disabled={!isWebcamActive}
+                      title="Stop webcam"
+                    >
+                      <span className="flex items-center justify-center">
+                        <span className="mr-1">⏹️</span> Stop
+                      </span>
+                    </button>
+                  </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  <button
-                    className="btn btn-sm control-btn h-[36px] text-xs"
-                    onClick={stopCapturing}
-                    title="Stop capturing frames"
-                  >
-                    <span className="flex items-center justify-center">
-                      <span className="mr-1">⏹️</span> Stop
-                    </span>
-                  </button>
-                  <button
-                    className={`btn btn-sm control-btn h-[36px] text-xs ${
-                      autoTrain
-                        ? "bg-green-500 border-green-600 text-white"
-                        : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-                    }`}
-                    onClick={startAutoTrain}
-                    disabled={!isWebcamActive || isLoading || isMemorizing}
-                    title="Start auto-training from webcam"
-                  >
-                    {autoTrain ? (
+
+                {/* Capture row */}
+                <div className="flex items-center mb-2 p-1 bg-gray-50 rounded-md">
+                  <div className="w-1/4 text-xs text-gray-500 font-medium pl-1">
+                    Capture:
+                  </div>
+                  <div className="w-3/4 grid grid-cols-2 gap-1">
+                    <button
+                      className="btn btn-sm control-btn h-[32px] text-xs bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                      onClick={startCapturing}
+                      disabled={!isWebcamActive}
+                      title="Start capturing frames"
+                    >
                       <span className="flex items-center justify-center">
-                        <span className="inline-block w-2 h-2 rounded-full bg-white mr-1 animate-pulse"></span>
-                        Auto
+                        <span className="mr-1">📸</span> Start
                       </span>
-                    ) : (
+                    </button>
+                    <button
+                      className="btn btn-sm control-btn h-[32px] text-xs bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                      onClick={stopCapturing}
+                      title="Stop capturing frames"
+                      disabled={!isWebcamActive}
+                    >
                       <span className="flex items-center justify-center">
-                        <span className="mr-1">🔄</span> Auto
+                        <span className="mr-1">⏹️</span> Stop
                       </span>
-                    )}
-                  </button>
-                  <button
-                    className="btn btn-sm control-btn h-[36px] text-xs"
-                    onClick={stopAutoTrain}
-                    disabled={!autoTrain || isLoading}
-                    title="Stop auto-training"
-                  >
-                    <span className="flex items-center justify-center">
-                      <span className="mr-1">⏹️</span> Stop
-                    </span>
-                  </button>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Auto-train row */}
+                <div className="flex items-center p-1 bg-gray-50 rounded-md">
+                  <div className="w-1/4 text-xs text-gray-500 font-medium pl-1">
+                    Auto-train:
+                  </div>
+                  <div className="w-3/4 grid grid-cols-2 gap-1">
+                    <button
+                      className={`btn btn-sm control-btn h-[32px] text-xs ${
+                        autoTrain
+                          ? "bg-green-500 border-green-600 text-white"
+                          : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                      }`}
+                      onClick={startAutoTrain}
+                      disabled={!isWebcamActive || isLoading || isMemorizing}
+                      title="Start auto-training from webcam"
+                    >
+                      {autoTrain ? (
+                        <span className="flex items-center justify-center">
+                          <span className="inline-block w-2 h-2 rounded-full bg-white mr-1 animate-pulse"></span>
+                          Start
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center">
+                          <span className="mr-1">🔄</span> Start
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      className="btn btn-sm control-btn h-[32px] text-xs bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                      onClick={stopAutoTrain}
+                      disabled={!autoTrain || isLoading}
+                      title="Stop auto-training"
+                    >
+                      <span className="flex items-center justify-center">
+                        <span className="mr-1">⏹️</span> Stop
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
