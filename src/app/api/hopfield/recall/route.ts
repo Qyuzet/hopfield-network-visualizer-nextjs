@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 // Access the global state
 const NUM_CELLS = 35;
 // These are declared in the parent route file but we need to redeclare them here
 declare global {
-  var weights: number[][];
-  var memorizedPatterns: number[][];
+  let weights: number[][];
+  let memorizedPatterns: number[][];
 }
 
 // Initialize if not already initialized
@@ -20,9 +20,12 @@ if (!global.memorizedPatterns) {
 
 export async function POST(request: NextRequest) {
   const { grid } = await request.json();
-  
+
   if (!grid) {
-    return NextResponse.json({ error: 'No grid data received' }, { status: 400 });
+    return NextResponse.json(
+      { error: "No grid data received" },
+      { status: 400 }
+    );
   }
 
   // Convert 2D grid to flat vector
@@ -35,11 +38,11 @@ export async function POST(request: NextRequest) {
       energy -= global.weights[i][j] * vector[i] * vector[j];
     }
   }
-  
+
   // Iteratively update the vector until convergence
   const maxIterations = 50;
   for (let iter = 0; iter < maxIterations; iter++) {
-    const prevVector = [...vector];
+    // We don't need to track the previous vector since we're using energy for convergence
     for (let i = 0; i < vector.length; i++) {
       let sumInput = 0;
       for (let j = 0; j < vector.length; j++) {
@@ -47,7 +50,7 @@ export async function POST(request: NextRequest) {
       }
       vector[i] = sumInput > 0 ? 1 : -1;
     }
-    
+
     // Recalculate energy after each update
     let newEnergy = 0;
     for (let i = 0; i < vector.length; i++) {
@@ -60,7 +63,7 @@ export async function POST(request: NextRequest) {
     if (newEnergy === energy) {
       break;
     }
-    
+
     energy = newEnergy; // Update the energy
   }
 

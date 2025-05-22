@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
-import katex from "katex";
+// KaTeX is imported and used in FormulaCard component
 import FormulaCard from "./components/FormulaCard";
 
 export default function Home() {
@@ -30,9 +30,7 @@ export default function Home() {
 
   const cellLength = 10;
 
-  const [isMemorizing, setIsMemorizing] = useState(false);
-
-  const renderCanvas = () => {
+  const renderCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -72,9 +70,9 @@ export default function Home() {
         }
       }
     }
-  };
+  }, [grid, cellLength]);
 
-  const renderCanvasOutput = () => {
+  const renderCanvasOutput = useCallback(() => {
     const canvas = canvasOutRef.current;
     if (!canvas) return;
 
@@ -117,7 +115,7 @@ export default function Home() {
         }
       }
     }
-  };
+  }, [grid, cellLength]);
 
   const startWebcam = async () => {
     try {
@@ -139,7 +137,12 @@ export default function Home() {
       videoRef.current.srcObject = null;
     }
     setIsWebcamActive(false);
-    clearInterval(captureIntervalRef.current);
+
+    // Safely clear the interval
+    if (captureIntervalRef.current) {
+      clearInterval(captureIntervalRef.current);
+      captureIntervalRef.current = null;
+    }
   };
 
   const memorizeGrid = async (gridToMemorize: number[][]) => {
@@ -154,29 +157,8 @@ export default function Home() {
     }
   };
 
-  const debouncedMemorize = useCallback(async () => {
-    // Prevent multiple simultaneous memorization attempts
-    if (isMemorizing) return;
-
-    try {
-      // Set memorization flag
-      setIsMemorizing(true);
-
-      // Perform memorization
-      const response = await axios.post("/api/hopfield/memorize", {
-        grid,
-      });
-
-      // Only fetch patterns if memorization is successful
-      console.log(response.data.message);
-      await fetchPatterns(); // Wait for patterns to be fetched
-    } catch (error) {
-      console.error("Error memorizing pattern:", error);
-    } finally {
-      // Always reset the memorization flag
-      setIsMemorizing(false);
-    }
-  }, [grid, isMemorizing]);
+  // Debounced memorization implementation removed to fix ESLint warnings
+  // Will be reimplemented in a future update if needed
 
   const processWebcamFrame = async () => {
     if (!isWebcamActive || !canvasRef.current || !videoRef.current) return;
@@ -221,7 +203,10 @@ export default function Home() {
   };
 
   const stopCapturing = () => {
-    clearInterval(captureIntervalRef.current);
+    if (captureIntervalRef.current) {
+      clearInterval(captureIntervalRef.current);
+      captureIntervalRef.current = null;
+    }
   };
 
   const startAutoTrain = () => {
@@ -282,7 +267,7 @@ export default function Home() {
     }
   };
 
-  const num_cells = 35; // Assuming the grid is 35x35
+  // Using the constant NUM_CELLS = 35 throughout the code
 
   const recallAll = async () => {
     console.log("Recall All - Current Patterns:", patterns);
@@ -398,7 +383,7 @@ export default function Home() {
   useEffect(() => {
     renderCanvas();
     renderCanvasOutput();
-  }, [grid]);
+  }, [grid, renderCanvas, renderCanvasOutput]);
 
   useEffect(() => {
     fetchPatterns();
@@ -413,13 +398,7 @@ export default function Home() {
     }
   }, [slideshowIndex]);
 
-  const Equation = ({ equation }: { equation: string }) => {
-    const equationHtml = katex.renderToString(equation, {
-      throwOnError: false,
-    });
-
-    return <div dangerouslySetInnerHTML={{ __html: equationHtml }} />;
-  };
+  // Equation component is defined in FormulaCard.tsx and used there
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -441,7 +420,9 @@ export default function Home() {
               {patterns.map((index) => (
                 <button
                   key={index}
-                  ref={(el) => (memoRefs.current[index] = el)}
+                  ref={(el) => {
+                    memoRefs.current[index] = el;
+                  }}
                   className="btn btn-sm text-[0.6em] bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors py-1 px-1 my-1 rounded"
                   onClick={() => recallLocal(index)}
                 >

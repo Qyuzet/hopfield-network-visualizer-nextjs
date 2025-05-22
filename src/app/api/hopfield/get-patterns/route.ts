@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 // Access the global state
 const NUM_CELLS = 35;
 // These are declared in the parent route file but we need to redeclare them here
 declare global {
-  var weights: number[][];
-  var memorizedPatterns: number[][];
+  let weights: number[][];
+  let memorizedPatterns: number[][];
 }
 
 // Initialize if not already initialized
@@ -18,6 +18,6 @@ if (!global.memorizedPatterns) {
   global.memorizedPatterns = [];
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   return NextResponse.json({ patterns: global.memorizedPatterns.length });
 }

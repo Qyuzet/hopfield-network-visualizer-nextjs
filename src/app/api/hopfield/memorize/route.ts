@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 // Access the global state
 const NUM_CELLS = 35;
 // These are declared in the parent route file but we need to redeclare them here
 declare global {
-  var weights: number[][];
-  var memorizedPatterns: number[][];
+  let weights: number[][];
+  let memorizedPatterns: number[][];
 }
 
 // Initialize if not already initialized
@@ -20,9 +20,9 @@ if (!global.memorizedPatterns) {
 
 export async function POST(request: NextRequest) {
   const { grid } = await request.json();
-  
+
   if (!grid) {
-    return NextResponse.json({ error: 'Invalid grid data' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid grid data" }, { status: 400 });
   }
 
   const vector = grid.flat();
@@ -37,5 +37,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ message: 'Pattern memorized successfully' });
+  return NextResponse.json({ message: "Pattern memorized successfully" });
 }
