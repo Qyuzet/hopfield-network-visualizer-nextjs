@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 // Global state for the Hopfield network
 // In a production app, you might want to use a database or a more persistent solution
