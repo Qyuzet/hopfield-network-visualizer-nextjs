@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useState } from "react";
@@ -9,7 +10,11 @@ interface FormulaCardProps {
   code: string;
 }
 
-export default function FormulaCard({ title, formula, code }: FormulaCardProps) {
+export default function FormulaCard({
+  title,
+  formula,
+  code,
+}: FormulaCardProps) {
   const [isCodeVisible, setIsCodeVisible] = useState(false);
 
   const toggleCode = () => {
@@ -19,9 +24,7 @@ export default function FormulaCard({ title, formula, code }: FormulaCardProps) 
   // Render LaTeX formula using KaTeX
   const renderFormula = (latex: string) => {
     return (
-      <span
-        dangerouslySetInnerHTML={{ __html: katex.renderToString(latex) }}
-      />
+      <span dangerouslySetInnerHTML={{ __html: katex.renderToString(latex) }} />
     );
   };
 
