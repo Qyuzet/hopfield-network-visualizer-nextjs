@@ -878,40 +878,143 @@ export default function Home() {
         <video ref={videoRef} style={{ display: "none" }} />
       </div>
 
-      {/* Formula Cards Section */}
-      <div className="flex flex-col w-full mt-4">
-        <div className="text-center my-4">
-          <h2 className="text-lg font-medium">Hopfield Facts</h2>
+      {/* Hopfield Network Facts Section */}
+      <div className="flex flex-col w-full mt-8 mb-12">
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-medium">Hopfield Network Facts</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Key concepts, formulas, and implementation details
+          </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        {/* Introduction to Hopfield Networks */}
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
+          <h3 className="text-lg font-medium text-blue-800 mb-2">
+            What is a Hopfield Network?
+          </h3>
+          <p className="text-sm text-blue-900 mb-3">
+            A Hopfield network is a recurrent neural network that can store and
+            recall patterns. It functions as a content-addressable memory system
+            with binary threshold nodes. Introduced by John Hopfield in 1982, it
+            serves as both a mathematical model for understanding human memory
+            and a practical tool for pattern recognition and optimization
+            problems.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm font-medium text-blue-800 mb-1">
+                Key Properties:
+              </h4>
+              <ul className="list-disc list-inside text-xs text-blue-900 space-y-1">
+                <li>
+                  Fully connected network (each neuron connects to all others)
+                </li>
+                <li>
+                  Binary state neurons (typically -1 or 1, sometimes 0 or 1)
+                </li>
+                <li>
+                  Symmetric weights (w<sub>ij</sub> = w<sub>ji</sub>)
+                </li>
+                <li>
+                  No self-connections (w<sub>ii</sub> = 0)
+                </li>
+                <li>Asynchronous updates (one neuron at a time)</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-blue-800 mb-1">
+                Applications:
+              </h4>
+              <ul className="list-disc list-inside text-xs text-blue-900 space-y-1">
+                <li>Pattern recognition and completion</li>
+                <li>Content-addressable memory</li>
+                <li>Noise reduction in signals</li>
+                <li>Optimization problems (traveling salesman)</li>
+                <li>Modeling associative memory in neuroscience</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Core Formulas */}
+        <h3 className="text-lg font-medium mb-3">Core Formulas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
           <FormulaCard
-            title="Energy"
-            formula="= \sum_{i<j} w_{ij} x_i x_j"
-            code={`Neuron update rule:
-sum_input = sum(weights[i][j] * vector[j] for j in range(len(vector)))
-vector[i] = 1 if sum_input > 0 else -1`}
+            title="Weight Matrix"
+            formula="w_{ij} = \frac{1}{N}\sum_{\mu=1}^{p}\xi_i^{\mu}\xi_j^{\mu}"
+            code={`# Weight calculation for N neurons and p patterns
+weights = np.zeros((N, N))
+for pattern in patterns:
+    weights += np.outer(pattern, pattern)
+np.fill_diagonal(weights, 0)  # No self-connections
+weights /= N  # Normalization`}
           />
 
           <FormulaCard
-            title="Update"
-            formula="= \text{sign}\left( \sum_j w_{ij} x_j \right)"
-            code={`Neuron update rule:
-sum_input = sum(weights[i][j] * vector[j] for j in range(len(vector)))
-vector[i] = 1 if sum_input > 0 else -1`}
+            title="Update Rule"
+            formula="s_i(t+1) = \text{sign}\left(\sum_j w_{ij}s_j(t)\right)"
+            code={`# Asynchronous update for neuron i
+def update_neuron(i, state, weights):
+    h = np.dot(weights[i], state)
+    return 1 if h >= 0 else -1`}
           />
 
+          <FormulaCard
+            title="Energy Function"
+            formula="E = -\frac{1}{2}\sum_{i,j}w_{ij}s_is_j"
+            code={`# Energy calculation
+def energy(state, weights):
+    return -0.5 * np.dot(state, np.dot(weights, state))`}
+          />
+
+          <FormulaCard
+            title="Storage Capacity"
+            formula="p_{max} \approx 0.138N"
+            code={`# Maximum number of patterns that can be stored
+max_patterns = int(0.138 * num_neurons)
+# Beyond this limit, recall accuracy decreases`}
+          />
+        </div>
+
+        {/* Advanced Concepts */}
+        <h3 className="text-lg font-medium mb-3">Advanced Concepts</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           <FormulaCard
             title="Hebbian Learning"
-            formula="w_{ij} \propto x_i x_j"
-            code={`Hebbian learning rule:
-wij += learning_rate * xi * xj`}
+            formula="w_{ij} \propto s_i s_j"
+            code={`# Hebbian learning rule
+# "Neurons that fire together, wire together"
+def hebbian_update(weights, pattern):
+    delta_w = np.outer(pattern, pattern)
+    np.fill_diagonal(delta_w, 0)
+    weights += learning_rate * delta_w`}
           />
 
           <FormulaCard
             title="Convergence"
-            formula="E_{t+1} \leq E_t"
-            code={`Convergence check:
-Et+1 <= Et`}
+            formula="E(t+1) \leq E(t)"
+            code={`# The energy function always decreases or stays the same
+# This guarantees convergence to a local minimum
+# Proof: Each update can only decrease or maintain energy`}
+          />
+
+          <FormulaCard
+            title="Spurious States"
+            formula="s^{mix} = \text{sign}(\xi^{\mu} + \xi^{\nu})"
+            code={`# Spurious states are stable states that don't correspond
+# to any of the stored patterns
+# They can be mixtures of patterns or spin-glass states
+# These limit the practical capacity of the network`}
+          />
+
+          <FormulaCard
+            title="Temperature"
+            formula="P(s_i = 1) = \frac{1}{1 + e^{-2\beta h_i}}"
+            code={`# Stochastic update rule with temperature T = 1/β
+def update_with_temp(i, state, weights, temp):
+    h = np.dot(weights[i], state)
+    p = 1 / (1 + np.exp(-2 * h / temp))
+    return 1 if random.random() < p else -1`}
           />
         </div>
       </div>
